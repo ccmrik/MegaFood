@@ -32,6 +32,16 @@ namespace MegaFood
         }
     }
 
+    [HarmonyPatch(typeof(Fermenter), "Awake")]
+    public static class FermenterAwakePatch
+    {
+        [HarmonyPostfix]
+        public static void Postfix(Fermenter __instance)
+        {
+            MegaFoodItems.RegisterFermenterConversion(__instance);
+        }
+    }
+
     [HarmonyPatch(typeof(Localization), nameof(Localization.SetupLanguage))]
     public static class LocalizationPatch
     {
@@ -49,6 +59,18 @@ namespace MegaFood
             AddTranslation(__instance, "item_megajerk", "MegaJerk");
             AddTranslation(__instance, "item_megajerk_desc",
                 "Boar jerky imbued with surtling fire. The purple sheen marks it as food fit for legends.");
+
+            AddTranslation(__instance, "item_megameadbase", "MegaMead Base");
+            AddTranslation(__instance, "item_megameadbase_desc",
+                "A volatile mead base crackling with surtling energy. Place in a Fermenter.");
+
+            AddTranslation(__instance, "item_megamead", "MegaMead");
+            AddTranslation(__instance, "item_megamead_desc",
+                "A legendary mead that supercharges regeneration while reducing resource costs. The purple shimmer is mesmerising.");
+
+            AddTranslation(__instance, "se_megamead", "MegaMead");
+            AddTranslation(__instance, "se_megamead_tooltip",
+                "Stamina, Health & Eitr regeneration greatly increased.\nStamina & Eitr usage reduced.");
         }
 
         private static void AddTranslation(Localization loc, string key, string value)

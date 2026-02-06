@@ -3,7 +3,7 @@
 ## Project Overview
 
 This is a **Valheim mod** built with **BepInEx 5.x** and **Harmony**.
-It adds three custom, high-tier food items to the game, each with a distinctive purple hue.
+It adds three custom, high-tier food items and a mead to the game, each with a distinctive purple hue.
 
 ## Architecture
 
@@ -12,7 +12,7 @@ It adds three custom, high-tier food items to the game, each with a distinctive 
 | `Plugin.cs` | BepInEx plugin entry point — initialises config and Harmony patches |
 | `MegaFoodConfig.cs` | BepInEx `ConfigEntry` bindings for per-item Health / Stamina / Eitr |
 | `MegaFoodItems.cs` | Clones existing prefabs, applies stats/tint, creates recipes |
-| `GamePatches.cs` | Harmony postfix patches for ObjectDB, ZNetScene, Localization |
+| `GamePatches.cs` | Harmony postfix patches for ObjectDB, ZNetScene, Localization, Fermenter |
 
 ## Coding Conventions
 
@@ -32,6 +32,8 @@ It adds three custom, high-tier food items to the game, each with a distinctive 
 | Cooked Egg | `CookedEgg` |
 | Boar Jerky | `BoarJerky` |
 | Cauldron | `piece_cauldron` |
+| Minor Eitr Mead | `MeadEitrMinor` |
+| Minor Eitr Mead Base | `MeadBaseEitrMinor` |
 
 ## Build & Deploy
 

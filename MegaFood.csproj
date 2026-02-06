@@ -22,6 +22,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include=".github\copilot-instructions.md" />
+    <None Include="inspector_tmp\inspector_tmp.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,10 +61,6 @@
       <HintPath>$(ValheimManagedDir)\UnityEngine.CoreModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="inspector_tmp\" />
   </ItemGroup>
 
   <!-- Auto-publish: copy DLL to plugin folder after successful build -->
