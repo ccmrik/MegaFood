@@ -1,0 +1,15 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+*.cache
+.vs/
+
+## Mod-specific
+Environment.props
+
+## Build artifacts
+*.dll
+*.pdb
+*.nupkg

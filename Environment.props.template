@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <!-- Path to your Valheim installation -->
+    <ValheimDir>C:\Program Files (x86)\Steam\steamapps\common\Valheim</ValheimDir>
+    <!-- Path to your BepInEx plugins folder (r2modman or manual install) -->
+    <PluginDir>C:\Users\USERNAME\AppData\Roaming\r2modmanPlus-local\Valheim\profiles\PROFILE_NAME\BepInEx\plugins</PluginDir>
+    <!-- Path to BepInEx core folder (contains BepInEx.dll, 0Harmony.dll) -->
+    <BepInExDir>C:\Users\USERNAME\AppData\Roaming\r2modmanPlus-local\Valheim\profiles\PROFILE_NAME\BepInEx\core</BepInExDir>
+  </PropertyGroup>
+</Project>
