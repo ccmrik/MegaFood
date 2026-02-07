@@ -183,28 +183,39 @@ namespace MegaFood
             var origSE = shared.m_consumeStatusEffect;
             if (origSE == null)
             {
-                Plugin.Log.LogWarning("MegaMead: original StatusEffect is null — creating new SE_Stats");
-                origSE = ScriptableObject.CreateInstance<SE_Stats>();
+                Plugin.Log.LogWarning("MegaMead: original SE is null — skipping SE setup");
+                return;
             }
 
+            // Clone the original SE so all vanilla defaults (armor, damage mods) stay safe.
             var se = Object.Instantiate(origSE);
             se.name = "SE_MegaMead";
             se.m_name = "$se_megamead";
             se.m_tooltip = "$se_megamead_tooltip";
+            se.m_ttl = 3600f;  // 1 hour
             Object.DontDestroyOnLoad(se);
 
             if (se is SE_Stats seStats)
             {
                 var cfg = MegaFoodConfig.MegaMead;
+
+                // Stamina & Eitr regen multipliers (safe — these only affect regen)
                 seStats.m_staminaRegenMultiplier = 1f + cfg.StaminaRegen.Value / 100f;
                 seStats.m_eitrRegenMultiplier    = 1f + cfg.EitrRegen.Value / 100f;
-                seStats.m_healthRegenMultiplier  = 1f + cfg.HealthRegen.Value / 100f;
-                seStats.m_runStaminaDrainModifier    = -(cfg.StaminaReduction.Value / 100f);
-                seStats.m_attackStaminaUseModifier   = -(cfg.StaminaReduction.Value / 100f);
-                seStats.m_blockStaminaUseModifier    = -(cfg.StaminaReduction.Value / 100f);
 
-                Plugin.Log.LogInfo($"MegaMead SE: staminaRegen={seStats.m_staminaRegenMultiplier}, " +
-                    $"eitrRegen={seStats.m_eitrRegenMultiplier}, healthRegen={seStats.m_healthRegenMultiplier}");
+                // Health regen via HP-over-time (NOT m_healthRegenMultiplier which can amplify damage)
+                seStats.m_healthRegenMultiplier  = 1f; // explicitly neutral
+                seStats.m_healthOverTime         = 2f + cfg.HealthRegen.Value / 50f;
+                seStats.m_healthOverTimeDuration = se.m_ttl;
+                seStats.m_healthOverTimeInterval = 5f;
+
+                // Stamina usage reduction
+                seStats.m_runStaminaDrainModifier  = -(cfg.StaminaReduction.Value / 100f);
+                seStats.m_attackStaminaUseModifier = -(cfg.StaminaReduction.Value / 100f);
+                seStats.m_blockStaminaUseModifier  = -(cfg.StaminaReduction.Value / 100f);
+
+                Plugin.Log.LogInfo($"MegaMead SE (cloned): staminaRegen={seStats.m_staminaRegenMultiplier}, " +
+                    $"eitrRegen={seStats.m_eitrRegenMultiplier}, healthOverTime={seStats.m_healthOverTime}");
             }
 
             shared.m_consumeStatusEffect = se;
