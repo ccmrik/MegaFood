@@ -2,8 +2,7 @@
 
 ## Project Overview
 
-This is a **Valheim mod** built with **BepInEx 5.x** and **Harmony**.
-It adds three custom, high-tier food items and a mead to the game, each with a distinctive purple hue.
+This is a **Valheim mod** built with **BepInEx 5.x** and **Harmony**. It adds three custom, high-tier food items and a mead to the game, each with a distinctive purple hue.
 
 ## Architecture
 
@@ -38,7 +37,25 @@ It adds three custom, high-tier food items and a mead to the game, each with a d
 ## Build & Deploy
 
 - **Post-build** automatically copies `MegaFood.dll` to the configured r2modman plugin folder.
-- **Version** is maintained in a single place: `<Version>` in `MegaFood.csproj`.
-  When bumping, also update `PluginVersion` in `Plugin.cs`.
-- **Environment.props** holds machine-specific paths and is git-ignored.
-  Copy `Environment.props.template` for a fresh setup.
+- **Version** is maintained in a single place: `<Version>` in `MegaFood.csproj`. When bumping, also update `PluginVersion` in `Plugin.cs`.
+- **Environment.props** holds machine-specific paths and is git-ignored. Copy `Environment.props.template` for a fresh setup.
+
+## Environment Defaults
+
+| Path | Location |
+|---|---|
+| Valheim game files | `C:\Program Files (x86)\Steam\steamapps\common\Valheim` |
+| r2modman plugins folder | `C:\Users\Rik\AppData\Roaming\r2modmanPlus-local\Valheim\profiles\Valheim Min Mods\BepInEx\plugins` |
+| Dedicated server | `C:\Program Files (x86)\Steam\steamapps\common\Valheim dedicated server\valheim_server.exe` |
+| Server saves | `C:\Users\Rik\AppData\LocalLow\IronGate\Valheim` |
+| Server logs | `C:\Users\Rik\OneDrive\Valheim\logs` |
+
+## Dedicated Server
+
+The dedicated server runs as a Windows service via **WinSW-x64**.
+
+- **Service name:** `ValheimServer`
+- **World:** Kvastur
+- **Port:** 2456
+- **Save interval:** 600 s
+- **Backups:** 4 (short 7200 s, long 43200 s)

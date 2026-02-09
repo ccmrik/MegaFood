@@ -22,17 +22,12 @@ namespace MegaFood
         public static void RegisterAll(ObjectDB objectDB)
         {
             if (objectDB.m_items.Count == 0 || objectDB.GetItemPrefab("Wood") == null)
-            {
-                Plugin.Log.LogWarning("RegisterAll skipped — ObjectDB not ready yet " +
-                    $"(items={objectDB.m_items.Count})");
                 return;
-            }
 
             if (!_prefabsCreated)
             {
                 InitContainer();
 
-                Plugin.Log.LogInfo("Creating MegaFood prefabs...");
                 CreateFood(objectDB, "YggdrasilPorridge", "MegaYgg",
                     "$item_megaygg", "$item_megaygg_desc", MegaFoodConfig.MegaYgg);
                 CreateFood(objectDB, "CookedEgg", "MegaEgg",
@@ -57,10 +52,7 @@ namespace MegaFood
             }
 
             if (added > 0)
-            {
                 objectDB.UpdateRegisters();
-                Plugin.Log.LogInfo($"Injected {added} items into ObjectDB");
-            }
 
             // Build recipes once (after items are in ObjectDB), then re-inject each call
             if (CachedRecipes.Count == 0)
@@ -84,7 +76,6 @@ namespace MegaFood
                 {
                     zNetScene.m_prefabs.Add(prefab);
                     zNetScene.m_namedPrefabs[hash] = prefab;
-                    Plugin.Log.LogDebug($"ZNetScene registered: {prefab.name}");
                 }
             }
         }
@@ -103,7 +94,6 @@ namespace MegaFood
                 m_to = MegaMeadPrefab.GetComponent<ItemDrop>(),
                 m_producedItems = 6,
             });
-            Plugin.Log.LogDebug("Fermenter conversion added: MegaMeadBase ? MegaMead");
         }
 
         #region Prefab creation
@@ -129,8 +119,6 @@ namespace MegaFood
             ApplyPurpleTint(clone);
 
             CachedPrefabs.Add(clone);
-            Plugin.Log.LogInfo($"Created {newName} (base={basePrefab}) — " +
-                $"HP={stats.Health.Value} Stam={stats.Stamina.Value} Eitr={stats.Eitr.Value}");
         }
 
         private static void CreateMead(ObjectDB objectDB)
@@ -145,7 +133,6 @@ namespace MegaFood
                 ApplyCommonItemProps(baseShared);
                 ApplyPurpleTint(MegaMeadBasePrefab);
                 CachedPrefabs.Add(MegaMeadBasePrefab);
-                Plugin.Log.LogInfo("Created MegaMeadBase (base=MeadBaseEitrMinor)");
             }
 
             // MegaMead — produced by fermenter, drinkable
@@ -159,7 +146,6 @@ namespace MegaFood
                 ApplyPurpleTint(MegaMeadPrefab);
                 ApplyMeadStatusEffect(meadShared);
                 CachedPrefabs.Add(MegaMeadPrefab);
-                Plugin.Log.LogInfo("Created MegaMead (base=MeadEitrMinor)");
             }
         }
 
@@ -180,43 +166,28 @@ namespace MegaFood
 
         private static void ApplyMeadStatusEffect(ItemDrop.ItemData.SharedData shared)
         {
-            var origSE = shared.m_consumeStatusEffect;
-            if (origSE == null)
-            {
-                Plugin.Log.LogWarning("MegaMead: original SE is null — skipping SE setup");
-                return;
-            }
-
-            // Clone the original SE so all vanilla defaults (armor, damage mods) stay safe.
-            var se = Object.Instantiate(origSE);
+            // Build a fresh SE_Stats instead of cloning the vanilla one.
+            // Object.Instantiate copies ALL fields (m_mods, damage modifiers, etc.)
+            // which can silently amplify incoming damage.
+            var se = ScriptableObject.CreateInstance<SE_Stats>();
             se.name = "SE_MegaMead";
             se.m_name = "$se_megamead";
             se.m_tooltip = "$se_megamead_tooltip";
             se.m_ttl = 3600f;  // 1 hour
             Object.DontDestroyOnLoad(se);
 
-            if (se is SE_Stats seStats)
-            {
-                var cfg = MegaFoodConfig.MegaMead;
+            var cfg = MegaFoodConfig.MegaMead;
 
-                // Stamina & Eitr regen multipliers (safe — these only affect regen)
-                seStats.m_staminaRegenMultiplier = 1f + cfg.StaminaRegen.Value / 100f;
-                seStats.m_eitrRegenMultiplier    = 1f + cfg.EitrRegen.Value / 100f;
+            // Regen multipliers
+            se.m_staminaRegenMultiplier = 1f + cfg.StaminaRegen.Value / 100f;
+            se.m_eitrRegenMultiplier    = 1f + cfg.EitrRegen.Value / 100f;
+            se.m_healthRegenMultiplier  = 1f + cfg.HealthRegen.Value / 100f;
 
-                // Health regen via HP-over-time (NOT m_healthRegenMultiplier which can amplify damage)
-                seStats.m_healthRegenMultiplier  = 1f; // explicitly neutral
-                seStats.m_healthOverTime         = 2f + cfg.HealthRegen.Value / 50f;
-                seStats.m_healthOverTimeDuration = se.m_ttl;
-                seStats.m_healthOverTimeInterval = 5f;
-
-                // Stamina usage reduction
-                seStats.m_runStaminaDrainModifier  = -(cfg.StaminaReduction.Value / 100f);
-                seStats.m_attackStaminaUseModifier = -(cfg.StaminaReduction.Value / 100f);
-                seStats.m_blockStaminaUseModifier  = -(cfg.StaminaReduction.Value / 100f);
-
-                Plugin.Log.LogInfo($"MegaMead SE (cloned): staminaRegen={seStats.m_staminaRegenMultiplier}, " +
-                    $"eitrRegen={seStats.m_eitrRegenMultiplier}, healthOverTime={seStats.m_healthOverTime}");
-            }
+            // Usage reduction
+            se.m_runStaminaDrainModifier  = -(cfg.StaminaReduction.Value / 100f);
+            se.m_attackStaminaUseModifier = -(cfg.StaminaReduction.Value / 100f);
+            se.m_blockStaminaUseModifier  = -(cfg.StaminaReduction.Value / 100f);
+            se.m_eitrUseModifier          = -(cfg.EitrReduction.Value / 100f);
 
             shared.m_consumeStatusEffect = se;
         }
@@ -225,10 +196,7 @@ namespace MegaFood
         {
             var original = objectDB.GetItemPrefab(originalName);
             if (original == null)
-            {
-                Plugin.Log.LogError($"Base prefab NOT FOUND: {originalName}");
                 return null;
-            }
 
             var clone = Object.Instantiate(original, _prefabContainer.transform);
             clone.name = newName;
@@ -261,10 +229,6 @@ namespace MegaFood
         private static void BuildRecipes(ObjectDB objectDB)
         {
             var cauldron = FindCraftingStation(objectDB, "piece_cauldron");
-            if (cauldron == null)
-                Plugin.Log.LogError("Cauldron crafting station NOT FOUND");
-            else
-                Plugin.Log.LogDebug($"Found cauldron: {cauldron.gameObject.name}");
 
             BuildRecipe(objectDB, "MegaYgg", cauldron, 5, new[]
             {
@@ -314,10 +278,7 @@ namespace MegaFood
         {
             var itemPrefab = objectDB.GetItemPrefab(itemName);
             if (itemPrefab == null)
-            {
-                Plugin.Log.LogError($"Recipe target prefab NOT FOUND: {itemName}");
                 return;
-            }
 
             var recipe = ScriptableObject.CreateInstance<Recipe>();
             recipe.name = $"Recipe_{itemName}";
@@ -329,17 +290,13 @@ namespace MegaFood
             recipe.m_resources = requirements;
 
             CachedRecipes.Add(recipe);
-            Plugin.Log.LogInfo($"Built recipe: {recipe.name} (station={station?.gameObject.name}, level={stationLevel})");
         }
 
         private static Piece.Requirement Ingredient(ObjectDB objectDB, string prefabName, int amount)
         {
             var prefab = objectDB.GetItemPrefab(prefabName);
             if (prefab == null)
-            {
-                Plugin.Log.LogError($"Ingredient prefab NOT FOUND: {prefabName}");
                 return new Piece.Requirement();
-            }
 
             return new Piece.Requirement
             {

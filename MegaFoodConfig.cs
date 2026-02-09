@@ -15,7 +15,6 @@ namespace MegaFood
         public ConfigEntry<float> HealthRegen;
         public ConfigEntry<float> EitrRegen;
         public ConfigEntry<float> StaminaReduction;
-        public ConfigEntry<float> HealthReduction;
         public ConfigEntry<float> EitrReduction;
     }
 
@@ -40,7 +39,6 @@ namespace MegaFood
                 HealthRegen     = config.Bind("MegaMead", "HealthRegeneration",  100f, "Percentage boost to health regeneration."),
                 EitrRegen       = config.Bind("MegaMead", "EitrRegeneration",    100f, "Percentage boost to eitr regeneration."),
                 StaminaReduction = config.Bind("MegaMead", "StaminaReduction",   50f,  "Percentage reduction to stamina usage."),
-                HealthReduction  = config.Bind("MegaMead", "HealthReduction",    50f,  "Percentage reduction to health drain."),
                 EitrReduction    = config.Bind("MegaMead", "EitrReduction",      50f,  "Percentage reduction to eitr usage."),
             };
 
