@@ -1,4 +1,5 @@
 using HarmonyLib;
+using UnityEngine;
 
 namespace MegaFood
 {
@@ -70,7 +71,7 @@ namespace MegaFood
 
             AddTranslation(__instance, "se_megamead", "MegaMead");
             AddTranslation(__instance, "se_megamead_tooltip",
-                "Stamina, Health & Eitr regeneration greatly increased.\nStamina & Eitr usage reduced.\nAll elemental & physical damage resistance.\nMovement speed increased.");
+                "Stamina, Health & Eitr regeneration greatly increased.\nStamina & Eitr usage reduced.\nAll elemental & physical damage resistance.\nMovement speed increased.\nBug repellent, swim boost, no fall damage.\nTroll pheromones, faster taming.");
         }
 
         private static void AddTranslation(Localization loc, string key, string value)
@@ -91,6 +92,25 @@ namespace MegaFood
                 __instance.m_seman.HaveStatusEffect(MegaMeadHash))
             {
                 v *= 1f - MegaFoodConfig.MegaMead.EitrReduction.Value / 100f;
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Tameable), nameof(Tameable.DecreaseRemainingTime))]
+    public static class TameablePatch
+    {
+        private static readonly int MegaMeadHash = "SE_MegaMead".GetStableHashCode();
+
+        [HarmonyPrefix]
+        public static void Prefix(ref float time)
+        {
+            if (!MegaFoodConfig.MegaMead.EnableTamer.Value) return;
+
+            var player = Player.m_localPlayer;
+            if (player != null && player.m_seman != null &&
+                player.m_seman.HaveStatusEffect(MegaMeadHash))
+            {
+                time *= 2f;
             }
         }
     }

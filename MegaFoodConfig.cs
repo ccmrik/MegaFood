@@ -17,6 +17,13 @@ namespace MegaFood
         public ConfigEntry<float> StaminaReduction;
         public ConfigEntry<float> EitrReduction;
         public ConfigEntry<float> SpeedIncrease;
+
+        // Integrated mead effect toggles
+        public ConfigEntry<bool> EnableBugRepellent;
+        public ConfigEntry<bool> EnableSwimmer;
+        public ConfigEntry<bool> EnableLightfoot;
+        public ConfigEntry<bool> EnableTamer;
+        public ConfigEntry<bool> EnableTrollPheromones;
     }
 
     public static class MegaFoodConfig
@@ -42,6 +49,12 @@ namespace MegaFood
                 StaminaReduction = config.Bind("MegaMead", "StaminaReduction",   50f,  "Percentage reduction to stamina usage."),
                 EitrReduction    = config.Bind("MegaMead", "EitrReduction",      50f,  "Percentage reduction to eitr usage."),
                 SpeedIncrease    = config.Bind("MegaMead", "SpeedIncrease",      15f,  "Percentage increase to movement speed."),
+
+                EnableBugRepellent    = config.Bind("MegaMead Effects", "BugRepellent",    true, "Grants bug repellent effect (stealth + silent, prevents insect aggro)."),
+                EnableSwimmer         = config.Bind("MegaMead Effects", "Swimmer",         true, "Grants swimmer effect (faster swimming, reduced swim stamina)."),
+                EnableLightfoot       = config.Bind("MegaMead Effects", "Lightfoot",       true, "Grants lightfoot effect (no fall damage)."),
+                EnableTamer           = config.Bind("MegaMead Effects", "Tamer",           true, "Grants tamer effect (2x taming speed)."),
+                EnableTrollPheromones = config.Bind("MegaMead Effects", "TrollPheromones", true, "Grants troll pheromone effect (trolls flee)."),
             };
 
             StackSize = config.Bind("Global", "StackSize", 100, "Max stack size for all MegaFood items.");

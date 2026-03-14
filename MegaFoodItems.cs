@@ -206,8 +206,35 @@ namespace MegaFood
                 new HitData.DamageModPair { m_type = HitData.DamageType.Pierce,    m_modifier = HitData.DamageModifier.VeryResistant },
             };
 
-            // Speed boost
+            // Speed boost (Hasty effect)
             se.m_speedModifier = cfg.SpeedIncrease.Value / 100f;
+
+            // Bug Repellent: max stealth + silent
+            if (cfg.EnableBugRepellent.Value)
+            {
+                se.m_stealthModifier = 1f;
+                se.m_noiseModifier = -1f;
+            }
+
+            // Swimmer: faster swimming, reduced swim stamina
+            if (cfg.EnableSwimmer.Value)
+            {
+                se.m_swimSpeedModifier = 0.5f;
+                se.m_swimStaminaUseModifier = -0.75f;
+            }
+
+            // Lightfoot: no fall damage
+            if (cfg.EnableLightfoot.Value)
+            {
+                se.m_fallDamageModifier = -1f;
+                se.m_maxMaxFallSpeed = 100f;
+            }
+
+            // Troll Pheromones: trolls flee
+            if (cfg.EnableTrollPheromones.Value)
+            {
+                se.m_pheromoneFlee = true;
+            }
 
             shared.m_consumeStatusEffect = se;
         }
