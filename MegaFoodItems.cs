@@ -39,7 +39,7 @@ namespace MegaFood
                 _prefabsCreated = true;
             }
 
-            // (Re-)inject into ObjectDB — CopyOtherDB wipes the lists each time
+            // (Re-)inject into ObjectDB ï¿½ CopyOtherDB wipes the lists each time
             int added = 0;
             foreach (var prefab in CachedPrefabs)
             {
@@ -123,7 +123,7 @@ namespace MegaFood
 
         private static void CreateMead(ObjectDB objectDB)
         {
-            // MegaMead Base — craftable at cauldron, goes into fermenter
+            // MegaMead Base ï¿½ craftable at cauldron, goes into fermenter
             MegaMeadBasePrefab = ClonePrefab(objectDB, "MeadBaseEitrMinor", "MegaMeadBase");
             if (MegaMeadBasePrefab != null)
             {
@@ -135,7 +135,7 @@ namespace MegaFood
                 CachedPrefabs.Add(MegaMeadBasePrefab);
             }
 
-            // MegaMead — produced by fermenter, drinkable
+            // MegaMead ï¿½ produced by fermenter, drinkable
             MegaMeadPrefab = ClonePrefab(objectDB, "MeadEitrMinor", "MegaMead");
             if (MegaMeadPrefab != null)
             {
@@ -166,6 +166,9 @@ namespace MegaFood
 
         private static void ApplyMeadStatusEffect(ItemDrop.ItemData.SharedData shared)
         {
+            // Grab the icon from the cloned vanilla SE before we replace it
+            var originalIcon = shared.m_consumeStatusEffect?.m_icon;
+
             // Build a fresh SE_Stats instead of cloning the vanilla one.
             // Object.Instantiate copies ALL fields (m_mods, damage modifiers, etc.)
             // which can silently amplify incoming damage.
@@ -173,6 +176,7 @@ namespace MegaFood
             se.name = "SE_MegaMead";
             se.m_name = "$se_megamead";
             se.m_tooltip = "$se_megamead_tooltip";
+            se.m_icon = originalIcon;
             se.m_ttl = 3600f;  // 1 hour
             Object.DontDestroyOnLoad(se);
 
@@ -187,7 +191,20 @@ namespace MegaFood
             se.m_runStaminaDrainModifier  = -(cfg.StaminaReduction.Value / 100f);
             se.m_attackStaminaUseModifier = -(cfg.StaminaReduction.Value / 100f);
             se.m_blockStaminaUseModifier  = -(cfg.StaminaReduction.Value / 100f);
-            se.m_eitrUseModifier          = -(cfg.EitrReduction.Value / 100f);
+
+            // Resistances
+            se.m_mods = new List<HitData.DamageModPair>
+            {
+                new HitData.DamageModPair { m_type = HitData.DamageType.Poison, m_modifier = HitData.DamageModifier.VeryResistant },
+                new HitData.DamageModPair { m_type = HitData.DamageType.Fire,   m_modifier = HitData.DamageModifier.Resistant },
+                new HitData.DamageModPair { m_type = HitData.DamageType.Frost,  m_modifier = HitData.DamageModifier.Resistant },
+                new HitData.DamageModPair { m_type = HitData.DamageType.Blunt,  m_modifier = HitData.DamageModifier.Resistant },
+                new HitData.DamageModPair { m_type = HitData.DamageType.Slash,  m_modifier = HitData.DamageModifier.Resistant },
+                new HitData.DamageModPair { m_type = HitData.DamageType.Pierce, m_modifier = HitData.DamageModifier.Resistant },
+            };
+
+            // Speed boost
+            se.m_speedModifier = cfg.SpeedIncrease.Value / 100f;
 
             shared.m_consumeStatusEffect = se;
         }

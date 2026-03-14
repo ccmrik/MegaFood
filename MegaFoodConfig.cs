@@ -16,6 +16,7 @@ namespace MegaFood
         public ConfigEntry<float> EitrRegen;
         public ConfigEntry<float> StaminaReduction;
         public ConfigEntry<float> EitrReduction;
+        public ConfigEntry<float> SpeedIncrease;
     }
 
     public static class MegaFoodConfig
@@ -40,6 +41,7 @@ namespace MegaFood
                 EitrRegen       = config.Bind("MegaMead", "EitrRegeneration",    100f, "Percentage boost to eitr regeneration."),
                 StaminaReduction = config.Bind("MegaMead", "StaminaReduction",   50f,  "Percentage reduction to stamina usage."),
                 EitrReduction    = config.Bind("MegaMead", "EitrReduction",      50f,  "Percentage reduction to eitr usage."),
+                SpeedIncrease    = config.Bind("MegaMead", "SpeedIncrease",      15f,  "Percentage increase to movement speed."),
             };
 
             StackSize = config.Bind("Global", "StackSize", 100, "Max stack size for all MegaFood items.");

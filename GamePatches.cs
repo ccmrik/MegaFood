@@ -70,7 +70,7 @@ namespace MegaFood
 
             AddTranslation(__instance, "se_megamead", "MegaMead");
             AddTranslation(__instance, "se_megamead_tooltip",
-                "Stamina, Health & Eitr regeneration greatly increased.\nStamina & Eitr usage reduced.");
+                "Stamina, Health & Eitr regeneration greatly increased.\nStamina & Eitr usage reduced.\nPoison, Fire & Frost resistance.\nPhysical damage reduction.\nMovement speed increased.");
         }
 
         private static void AddTranslation(Localization loc, string key, string value)
