@@ -70,12 +70,28 @@ namespace MegaFood
 
             AddTranslation(__instance, "se_megamead", "MegaMead");
             AddTranslation(__instance, "se_megamead_tooltip",
-                "Stamina, Health & Eitr regeneration greatly increased.\nStamina & Eitr usage reduced.\nPoison, Fire & Frost resistance.\nPhysical damage reduction.\nMovement speed increased.");
+                "Stamina, Health & Eitr regeneration greatly increased.\nStamina & Eitr usage reduced.\nAll elemental & physical damage resistance.\nMovement speed increased.");
         }
 
         private static void AddTranslation(Localization loc, string key, string value)
         {
             loc.m_translations[key] = value;
+        }
+    }
+
+    [HarmonyPatch(typeof(Player), nameof(Player.UseEitr))]
+    public static class UseEitrPatch
+    {
+        private static readonly int MegaMeadHash = "SE_MegaMead".GetStableHashCode();
+
+        [HarmonyPrefix]
+        public static void Prefix(Player __instance, ref float v)
+        {
+            if (v > 0f && __instance.m_seman != null &&
+                __instance.m_seman.HaveStatusEffect(MegaMeadHash))
+            {
+                v *= 1f - MegaFoodConfig.MegaMead.EitrReduction.Value / 100f;
+            }
         }
     }
 }

@@ -191,16 +191,19 @@ namespace MegaFood
             se.m_runStaminaDrainModifier  = -(cfg.StaminaReduction.Value / 100f);
             se.m_attackStaminaUseModifier = -(cfg.StaminaReduction.Value / 100f);
             se.m_blockStaminaUseModifier  = -(cfg.StaminaReduction.Value / 100f);
+            // Eitr usage reduction is applied via Harmony patch (UseEitrPatch)
 
             // Resistances
             se.m_mods = new List<HitData.DamageModPair>
             {
-                new HitData.DamageModPair { m_type = HitData.DamageType.Poison, m_modifier = HitData.DamageModifier.VeryResistant },
-                new HitData.DamageModPair { m_type = HitData.DamageType.Fire,   m_modifier = HitData.DamageModifier.Resistant },
-                new HitData.DamageModPair { m_type = HitData.DamageType.Frost,  m_modifier = HitData.DamageModifier.Resistant },
-                new HitData.DamageModPair { m_type = HitData.DamageType.Blunt,  m_modifier = HitData.DamageModifier.Resistant },
-                new HitData.DamageModPair { m_type = HitData.DamageType.Slash,  m_modifier = HitData.DamageModifier.Resistant },
-                new HitData.DamageModPair { m_type = HitData.DamageType.Pierce, m_modifier = HitData.DamageModifier.Resistant },
+                new HitData.DamageModPair { m_type = HitData.DamageType.Poison,    m_modifier = HitData.DamageModifier.VeryResistant },
+                new HitData.DamageModPair { m_type = HitData.DamageType.Fire,      m_modifier = HitData.DamageModifier.VeryResistant },
+                new HitData.DamageModPair { m_type = HitData.DamageType.Frost,     m_modifier = HitData.DamageModifier.VeryResistant },
+                new HitData.DamageModPair { m_type = HitData.DamageType.Lightning, m_modifier = HitData.DamageModifier.VeryResistant },
+                new HitData.DamageModPair { m_type = HitData.DamageType.Spirit,    m_modifier = HitData.DamageModifier.VeryResistant },
+                new HitData.DamageModPair { m_type = HitData.DamageType.Blunt,     m_modifier = HitData.DamageModifier.VeryResistant },
+                new HitData.DamageModPair { m_type = HitData.DamageType.Slash,     m_modifier = HitData.DamageModifier.VeryResistant },
+                new HitData.DamageModPair { m_type = HitData.DamageType.Pierce,    m_modifier = HitData.DamageModifier.VeryResistant },
             };
 
             // Speed boost
