@@ -234,6 +234,9 @@ namespace MegaFood
             if (cfg.EnableTrollPheromones.Value)
             {
                 se.m_pheromoneFlee = true;
+                var trollPrefab = ZNetScene.instance?.GetPrefab("Troll");
+                if (trollPrefab != null)
+                    se.m_pheromoneTarget = trollPrefab;
             }
 
             shared.m_consumeStatusEffect = se;
