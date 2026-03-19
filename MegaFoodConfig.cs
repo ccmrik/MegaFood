@@ -34,6 +34,7 @@ namespace MegaFood
         public static MeadStats MegaMead { get; private set; }
 
         public static ConfigEntry<int> StackSize { get; private set; }
+        public static ConfigEntry<bool> DebugMode { get; private set; }
 
         public static void Bind(ConfigFile config)
         {
@@ -58,6 +59,9 @@ namespace MegaFood
             };
 
             StackSize = config.Bind("Global", "StackSize", 100, "Max stack size for all MegaFood items.");
+
+            DebugMode = config.Bind("Debug", "DebugMode", false,
+                "Enable verbose debug logging to BepInEx console/log");
         }
 
         private static FoodStats BindFoodSection(ConfigFile config, string section)
