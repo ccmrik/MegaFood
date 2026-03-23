@@ -13,3 +13,6 @@ Environment.props
 *.dll
 *.pdb
 *.nupkg
+
+## Maintenance reports
+maintenance-report.json

@@ -6,9 +6,9 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
-    <Version>1.1.4</Version>
-    <AssemblyVersion>1.1.2</AssemblyVersion>
-    <FileVersion>1.1.2</FileVersion>
+    <Version>1.1.5</Version>
+    <AssemblyVersion>1.1.5</AssemblyVersion>
+    <FileVersion>1.1.5</FileVersion>
     <Authors>rikal</Authors>
     <Description>Adds powerful MegaFood items to Valheim - MegaYgg, MegaEgg, and MegaJerk</Description>
   </PropertyGroup>
@@ -62,12 +62,5 @@
       <Private>false</Private>
     </Reference>
   </ItemGroup>
-
-  <!-- Auto-publish: copy DLL to plugin folder after successful build -->
-  <Target Name="PublishToPluginFolder" AfterTargets="Build" Condition="Exists('$(PluginDir)')">
-    <MakeDir Directories="$(PluginDir)\MegaFood" />
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(PluginDir)\MegaFood" OverwriteReadOnlyFiles="true" />
-    <Message Importance="High" Text="Published $(AssemblyName).dll → $(PluginDir)\MegaFood" />
-  </Target>
 
 </Project>
