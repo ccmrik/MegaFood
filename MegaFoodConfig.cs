@@ -38,9 +38,9 @@ namespace MegaFood
 
         public static void Bind(ConfigFile config)
         {
-            MegaYgg = BindFoodSection(config, "2. MegaYgg");
+            MegaJerk = BindFoodSection(config, "2. MegaJerk");
             MegaEgg = BindFoodSection(config, "3. MegaEgg");
-            MegaJerk = BindFoodSection(config, "4. MegaJerk");
+            MegaYgg = BindFoodSection(config, "4. MegaYgg");
 
             MegaMead = new MeadStats
             {
@@ -58,7 +58,7 @@ namespace MegaFood
                 EnableTrollPheromones = config.Bind("6. MegaMead Effects", "TrollPheromones", true, "Grants troll pheromone effect (trolls flee)."),
             };
 
-            StackSize = config.Bind("1. Global", "StackSize", 100, "Max stack size for all MegaFood items.");
+            StackSize = config.Bind("1. General", "StackSize", 100, "Max stack size for all MegaFood items.");
 
             DebugMode = config.Bind("7. Debug", "DebugMode", false,
                 "Enable verbose debug logging to BepInEx console/log");

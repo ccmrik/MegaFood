@@ -11,7 +11,7 @@ namespace MegaFood
     {
         public const string PluginGUID = "com.rikal.megafood";
         public const string PluginName = "MegaFood";
-        public const string PluginVersion = "1.1.8";
+        public const string PluginVersion = "1.1.9";
 
         private static ManualLogSource _logger;
         private readonly Harmony _harmony = new Harmony(PluginGUID);
@@ -87,13 +87,19 @@ namespace MegaFood
                 string text = File.ReadAllText(configPath);
                 bool changed = false;
 
-                changed |= MigrateCfgSection(ref text, "Global", "1. Global");
-                changed |= MigrateCfgSection(ref text, "MegaYgg", "2. MegaYgg");
+                // Unnumbered → numbered
+                changed |= MigrateCfgSection(ref text, "Global", "1. General");
+                changed |= MigrateCfgSection(ref text, "MegaYgg", "4. MegaYgg");
                 changed |= MigrateCfgSection(ref text, "MegaEgg", "3. MegaEgg");
-                changed |= MigrateCfgSection(ref text, "MegaJerk", "4. MegaJerk");
+                changed |= MigrateCfgSection(ref text, "MegaJerk", "2. MegaJerk");
                 changed |= MigrateCfgSection(ref text, "MegaMead", "5. MegaMead");
                 changed |= MigrateCfgSection(ref text, "MegaMead Effects", "6. MegaMead Effects");
                 changed |= MigrateCfgSection(ref text, "Debug", "7. Debug");
+
+                // v1.1.8 → v1.1.9 renumber + rename
+                changed |= MigrateCfgSection(ref text, "1. Global", "1. General");
+                changed |= MigrateCfgSection(ref text, "2. MegaYgg", "4. MegaYgg");
+                changed |= MigrateCfgSection(ref text, "4. MegaJerk", "2. MegaJerk");
 
                 if (changed)
                     File.WriteAllText(configPath, text.TrimEnd() + "\n");
