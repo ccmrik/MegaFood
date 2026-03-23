@@ -11,7 +11,7 @@ namespace MegaFood
     {
         public const string PluginGUID = "com.rikal.megafood";
         public const string PluginName = "MegaFood";
-        public const string PluginVersion = "1.1.9";
+        public const string PluginVersion = "1.2.0";
 
         private static ManualLogSource _logger;
         private readonly Harmony _harmony = new Harmony(PluginGUID);
@@ -87,19 +87,27 @@ namespace MegaFood
                 string text = File.ReadAllText(configPath);
                 bool changed = false;
 
-                // Unnumbered → numbered
-                changed |= MigrateCfgSection(ref text, "Global", "1. General");
-                changed |= MigrateCfgSection(ref text, "MegaYgg", "4. MegaYgg");
-                changed |= MigrateCfgSection(ref text, "MegaEgg", "3. MegaEgg");
-                changed |= MigrateCfgSection(ref text, "MegaJerk", "2. MegaJerk");
-                changed |= MigrateCfgSection(ref text, "MegaMead", "5. MegaMead");
-                changed |= MigrateCfgSection(ref text, "MegaMead Effects", "6. MegaMead Effects");
-                changed |= MigrateCfgSection(ref text, "Debug", "7. Debug");
+                // v1.2.0: Remove old per-food stat sections (Health/Stamina/Eitr are now hardcoded)
+                changed |= MigrateCfgSection(ref text, "MegaYgg", null);
+                changed |= MigrateCfgSection(ref text, "MegaEgg", null);
+                changed |= MigrateCfgSection(ref text, "MegaJerk", null);
+                changed |= MigrateCfgSection(ref text, "2. MegaYgg", null);
+                changed |= MigrateCfgSection(ref text, "3. MegaEgg", null);
+                changed |= MigrateCfgSection(ref text, "4. MegaJerk", null);
+                changed |= MigrateCfgSection(ref text, "2. MegaJerk", null);
+                changed |= MigrateCfgSection(ref text, "4. MegaYgg", null);
 
-                // v1.1.8 → v1.1.9 renumber + rename
+                // Rename unnumbered → numbered
+                changed |= MigrateCfgSection(ref text, "Global", "1. General");
                 changed |= MigrateCfgSection(ref text, "1. Global", "1. General");
-                changed |= MigrateCfgSection(ref text, "2. MegaYgg", "4. MegaYgg");
-                changed |= MigrateCfgSection(ref text, "4. MegaJerk", "2. MegaJerk");
+                changed |= MigrateCfgSection(ref text, "MegaMead Effects", "4. MegaMead Effects");
+                changed |= MigrateCfgSection(ref text, "MegaMead", "3. MegaMead");
+                changed |= MigrateCfgSection(ref text, "Debug", "5. Debug");
+
+                // Renumber from v1.1.x layout
+                changed |= MigrateCfgSection(ref text, "5. MegaMead", "3. MegaMead");
+                changed |= MigrateCfgSection(ref text, "6. MegaMead Effects", "4. MegaMead Effects");
+                changed |= MigrateCfgSection(ref text, "7. Debug", "5. Debug");
 
                 if (changed)
                     File.WriteAllText(configPath, text.TrimEnd() + "\n");

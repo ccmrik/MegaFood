@@ -28,14 +28,18 @@ namespace MegaFood
             {
                 InitContainer();
 
-                CreateFood(objectDB, "YggdrasilPorridge", "MegaYgg",
-                    "$item_megaygg", "$item_megaygg_desc", MegaFoodConfig.MegaYgg);
-                CreateFood(objectDB, "CookedEgg", "MegaEgg",
-                    "$item_megaegg", "$item_megaegg_desc", MegaFoodConfig.MegaEgg);
-                CreateFood(objectDB, "BoarJerky", "MegaJerk",
-                    "$item_megajerk", "$item_megajerk_desc", MegaFoodConfig.MegaJerk);
+                if (MegaFoodConfig.EnableMegaYgg.Value)
+                    CreateFood(objectDB, "YggdrasilPorridge", "MegaYgg",
+                        "$item_megaygg", "$item_megaygg_desc");
+                if (MegaFoodConfig.EnableMegaEgg.Value)
+                    CreateFood(objectDB, "CookedEgg", "MegaEgg",
+                        "$item_megaegg", "$item_megaegg_desc");
+                if (MegaFoodConfig.EnableMegaJerk.Value)
+                    CreateFood(objectDB, "BoarJerky", "MegaJerk",
+                        "$item_megajerk", "$item_megajerk_desc");
 
-                CreateMead(objectDB);
+                if (MegaFoodConfig.EnableMegaMead.Value)
+                    CreateMead(objectDB);
                 _prefabsCreated = true;
             }
 
@@ -106,7 +110,7 @@ namespace MegaFood
         }
 
         private static void CreateFood(ObjectDB objectDB, string basePrefab,
-            string newName, string nameToken, string descToken, FoodStats stats)
+            string newName, string nameToken, string descToken)
         {
             var clone = ClonePrefab(objectDB, basePrefab, newName);
             if (clone == null) return;
@@ -114,7 +118,7 @@ namespace MegaFood
             var shared = clone.GetComponent<ItemDrop>().m_itemData.m_shared;
             shared.m_name = nameToken;
             shared.m_description = descToken;
-            ApplyMegaStats(shared, stats);
+            ApplyMegaStats(shared);
             ApplyCommonItemProps(shared);
             ApplyPurpleTint(clone);
 
@@ -149,11 +153,11 @@ namespace MegaFood
             }
         }
 
-        private static void ApplyMegaStats(ItemDrop.ItemData.SharedData shared, FoodStats stats)
+        private static void ApplyMegaStats(ItemDrop.ItemData.SharedData shared)
         {
-            shared.m_food = stats.Health.Value;
-            shared.m_foodStamina = stats.Stamina.Value;
-            shared.m_foodEitr = stats.Eitr.Value;
+            shared.m_food = 150f;
+            shared.m_foodStamina = 150f;
+            shared.m_foodEitr = 150f;
             shared.m_foodBurnTime = 3600f;  // 1 hour
             shared.m_foodRegen = 7f;
         }
