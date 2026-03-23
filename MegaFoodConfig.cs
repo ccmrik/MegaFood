@@ -38,29 +38,29 @@ namespace MegaFood
 
         public static void Bind(ConfigFile config)
         {
-            MegaYgg = BindFoodSection(config, "MegaYgg");
-            MegaEgg = BindFoodSection(config, "MegaEgg");
-            MegaJerk = BindFoodSection(config, "MegaJerk");
+            MegaYgg = BindFoodSection(config, "2. MegaYgg");
+            MegaEgg = BindFoodSection(config, "3. MegaEgg");
+            MegaJerk = BindFoodSection(config, "4. MegaJerk");
 
             MegaMead = new MeadStats
             {
-                StaminaRegen    = config.Bind("MegaMead", "StaminaRegeneration", 100f, "Percentage boost to stamina regeneration."),
-                HealthRegen     = config.Bind("MegaMead", "HealthRegeneration",  100f, "Percentage boost to health regeneration."),
-                EitrRegen       = config.Bind("MegaMead", "EitrRegeneration",    100f, "Percentage boost to eitr regeneration."),
-                StaminaReduction = config.Bind("MegaMead", "StaminaReduction",   50f,  "Percentage reduction to stamina usage."),
-                EitrReduction    = config.Bind("MegaMead", "EitrReduction",      50f,  "Percentage reduction to eitr usage."),
-                SpeedIncrease    = config.Bind("MegaMead", "SpeedIncrease",      15f,  "Percentage increase to movement speed."),
+                StaminaRegen    = config.Bind("5. MegaMead", "StaminaRegeneration", 100f, "Percentage boost to stamina regeneration."),
+                HealthRegen     = config.Bind("5. MegaMead", "HealthRegeneration",  100f, "Percentage boost to health regeneration."),
+                EitrRegen       = config.Bind("5. MegaMead", "EitrRegeneration",    100f, "Percentage boost to eitr regeneration."),
+                StaminaReduction = config.Bind("5. MegaMead", "StaminaReduction",   50f,  "Percentage reduction to stamina usage."),
+                EitrReduction    = config.Bind("5. MegaMead", "EitrReduction",      50f,  "Percentage reduction to eitr usage."),
+                SpeedIncrease    = config.Bind("5. MegaMead", "SpeedIncrease",      15f,  "Percentage increase to movement speed."),
 
-                EnableBugRepellent    = config.Bind("MegaMead Effects", "BugRepellent",    true, "Grants bug repellent effect (stealth + silent, prevents insect aggro)."),
-                EnableSwimmer         = config.Bind("MegaMead Effects", "Swimmer",         true, "Grants swimmer effect (faster swimming, reduced swim stamina)."),
-                EnableLightfoot       = config.Bind("MegaMead Effects", "Lightfoot",       true, "Grants lightfoot effect (no fall damage)."),
-                EnableTamer           = config.Bind("MegaMead Effects", "Tamer",           true, "Grants tamer effect (2x taming speed)."),
-                EnableTrollPheromones = config.Bind("MegaMead Effects", "TrollPheromones", true, "Grants troll pheromone effect (trolls flee)."),
+                EnableBugRepellent    = config.Bind("6. MegaMead Effects", "BugRepellent",    true, "Grants bug repellent effect (stealth + silent, prevents insect aggro)."),
+                EnableSwimmer         = config.Bind("6. MegaMead Effects", "Swimmer",         true, "Grants swimmer effect (faster swimming, reduced swim stamina)."),
+                EnableLightfoot       = config.Bind("6. MegaMead Effects", "Lightfoot",       true, "Grants lightfoot effect (no fall damage)."),
+                EnableTamer           = config.Bind("6. MegaMead Effects", "Tamer",           true, "Grants tamer effect (2x taming speed)."),
+                EnableTrollPheromones = config.Bind("6. MegaMead Effects", "TrollPheromones", true, "Grants troll pheromone effect (trolls flee)."),
             };
 
-            StackSize = config.Bind("Global", "StackSize", 100, "Max stack size for all MegaFood items.");
+            StackSize = config.Bind("1. Global", "StackSize", 100, "Max stack size for all MegaFood items.");
 
-            DebugMode = config.Bind("Debug", "DebugMode", false,
+            DebugMode = config.Bind("7. Debug", "DebugMode", false,
                 "Enable verbose debug logging to BepInEx console/log");
         }
 
