@@ -11,7 +11,7 @@ namespace MegaFood
     {
         public const string PluginGUID = "com.rikal.megafood";
         public const string PluginName = "MegaFood";
-        public const string PluginVersion = "1.1.6";
+        public const string PluginVersion = "1.1.7";
 
         private static ManualLogSource _logger;
         private readonly Harmony _harmony = new Harmony(PluginGUID);
@@ -23,6 +23,7 @@ namespace MegaFood
             _logger = Logger;
             _config = Config;
 
+            MigrateConfig(Config.ConfigFilePath);
             MegaFoodConfig.Bind(Config);
             SetupConfigWatcher();
             _harmony.PatchAll();
@@ -75,6 +76,50 @@ namespace MegaFood
                 _configWatcher = null;
             }
             _harmony.UnpatchSelf();
+        }
+
+        private static void MigrateConfig(string configPath)
+        {
+            try
+            {
+                if (!File.Exists(configPath)) return;
+                string text = File.ReadAllText(configPath);
+                bool changed = false;
+
+                changed |= MigrateCfgSection(ref text, "Global", "1. Global");
+                changed |= MigrateCfgSection(ref text, "MegaYgg", "2. MegaYgg");
+                changed |= MigrateCfgSection(ref text, "MegaEgg", "3. MegaEgg");
+                changed |= MigrateCfgSection(ref text, "MegaJerk", "4. MegaJerk");
+                changed |= MigrateCfgSection(ref text, "MegaMead", "5. MegaMead");
+                changed |= MigrateCfgSection(ref text, "MegaMead Effects", "6. MegaMead Effects");
+                changed |= MigrateCfgSection(ref text, "Debug", "7. Debug");
+
+                if (changed)
+                    File.WriteAllText(configPath, text.TrimEnd() + "\n");
+            }
+            catch { }
+        }
+
+        private static bool MigrateCfgSection(ref string text, string oldName, string newName)
+        {
+            string oldHeader = "[" + oldName + "]";
+            int idx = text.IndexOf(oldHeader, StringComparison.OrdinalIgnoreCase);
+            if (idx < 0) return false;
+
+            int sectionEnd = text.IndexOf("\n[", idx + oldHeader.Length, StringComparison.Ordinal);
+
+            if (newName == null || text.IndexOf("[" + newName + "]", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                if (sectionEnd < 0)
+                    text = text.Substring(0, idx).TrimEnd('\r', '\n');
+                else
+                    text = text.Substring(0, idx) + text.Substring(sectionEnd + 1);
+            }
+            else
+            {
+                text = text.Remove(idx, oldHeader.Length).Insert(idx, "[" + newName + "]");
+            }
+            return true;
         }
     }
 }
