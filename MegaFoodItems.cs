@@ -158,7 +158,7 @@ namespace MegaFood
             shared.m_food = 150f;
             shared.m_foodStamina = 150f;
             shared.m_foodEitr = 150f;
-            shared.m_foodBurnTime = 3600f;  // 1 hour
+            shared.m_foodBurnTime = MegaFoodConfig.Duration.Value * 60f;
             shared.m_foodRegen = 7f;
         }
 
@@ -170,78 +170,86 @@ namespace MegaFood
 
         private static void ApplyMeadStatusEffect(ItemDrop.ItemData.SharedData shared)
         {
-            // Grab the icon from the cloned vanilla SE before we replace it
             var originalIcon = shared.m_consumeStatusEffect?.m_icon;
 
-            // Build a fresh SE_Stats instead of cloning the vanilla one.
-            // Object.Instantiate copies ALL fields (m_mods, damage modifiers, etc.)
-            // which can silently amplify incoming damage.
+            // Build a fresh SE_Stats — never clone vanilla (inherits unwanted damage mods)
             var se = ScriptableObject.CreateInstance<SE_Stats>();
             se.name = "SE_MegaMead";
             se.m_name = "$se_megamead";
             se.m_tooltip = "$se_megamead_tooltip";
             se.m_icon = originalIcon;
-            se.m_ttl = 3600f;  // 1 hour
+            se.m_ttl = MegaFoodConfig.Duration.Value * 60f;
             Object.DontDestroyOnLoad(se);
 
-            var cfg = MegaFoodConfig.MegaMead;
+            // Fire Resistance Barley Wine (BarleyWine)
+            // Frost Resistance Mead (MeadFrostResist)
+            // Poison Resistance Mead (MeadPoisonResist)
+            var mods = new List<HitData.DamageModPair>();
+            if (MegaFoodConfig.FireResistance.Value)
+                mods.Add(new HitData.DamageModPair { m_type = HitData.DamageType.Fire, m_modifier = HitData.DamageModifier.VeryResistant });
+            if (MegaFoodConfig.FrostResistance.Value)
+                mods.Add(new HitData.DamageModPair { m_type = HitData.DamageType.Frost, m_modifier = HitData.DamageModifier.VeryResistant });
+            if (MegaFoodConfig.PoisonResistance.Value)
+                mods.Add(new HitData.DamageModPair { m_type = HitData.DamageType.Poison, m_modifier = HitData.DamageModifier.VeryResistant });
+            se.m_mods = mods;
 
-            // Regen multipliers
-            se.m_staminaRegenMultiplier = 1f + cfg.StaminaRegen.Value / 100f;
-            se.m_eitrRegenMultiplier    = 1f + cfg.EitrRegen.Value / 100f;
-            se.m_healthRegenMultiplier  = 1f + cfg.HealthRegen.Value / 100f;
+            // Lingering Healing Mead (MeadHealthLingering) — +25% health regen
+            if (MegaFoodConfig.LingeringHealing.Value)
+                se.m_healthRegenMultiplier = 1.25f;
 
-            // Usage reduction
-            se.m_runStaminaDrainModifier  = -(cfg.StaminaReduction.Value / 100f);
-            se.m_attackStaminaUseModifier = -(cfg.StaminaReduction.Value / 100f);
-            se.m_blockStaminaUseModifier  = -(cfg.StaminaReduction.Value / 100f);
-            // Eitr usage reduction is applied via Harmony patch (UseEitrPatch)
+            // Lingering Stamina Mead (MeadStaminaLingering) — +25% stamina regen
+            if (MegaFoodConfig.LingeringStamina.Value)
+                se.m_staminaRegenMultiplier = 1.25f;
 
-            // Resistances
-            se.m_mods = new List<HitData.DamageModPair>
-            {
-                new HitData.DamageModPair { m_type = HitData.DamageType.Poison,    m_modifier = HitData.DamageModifier.VeryResistant },
-                new HitData.DamageModPair { m_type = HitData.DamageType.Fire,      m_modifier = HitData.DamageModifier.VeryResistant },
-                new HitData.DamageModPair { m_type = HitData.DamageType.Frost,     m_modifier = HitData.DamageModifier.VeryResistant },
-                new HitData.DamageModPair { m_type = HitData.DamageType.Lightning, m_modifier = HitData.DamageModifier.VeryResistant },
-                new HitData.DamageModPair { m_type = HitData.DamageType.Spirit,    m_modifier = HitData.DamageModifier.VeryResistant },
-                new HitData.DamageModPair { m_type = HitData.DamageType.Blunt,     m_modifier = HitData.DamageModifier.VeryResistant },
-                new HitData.DamageModPair { m_type = HitData.DamageType.Slash,     m_modifier = HitData.DamageModifier.VeryResistant },
-                new HitData.DamageModPair { m_type = HitData.DamageType.Pierce,    m_modifier = HitData.DamageModifier.VeryResistant },
-            };
+            // Lingering Eitr Mead (MeadEitrLingering) — +25% eitr regen
+            if (MegaFoodConfig.LingeringEitr.Value)
+                se.m_eitrRegenMultiplier = 1.25f;
 
-            // Speed boost (Hasty effect)
-            se.m_speedModifier = cfg.SpeedIncrease.Value / 100f;
-
-            // Bug Repellent: max stealth + silent
-            if (cfg.EnableBugRepellent.Value)
-            {
-                se.m_stealthModifier = 1f;
-                se.m_noiseModifier = -1f;
-            }
-
-            // Swimmer: faster swimming, reduced swim stamina
-            if (cfg.EnableSwimmer.Value)
-            {
-                se.m_swimSpeedModifier = 0.5f;
-                se.m_swimStaminaUseModifier = -0.75f;
-            }
-
-            // Lightfoot: no fall damage
-            if (cfg.EnableLightfoot.Value)
-            {
-                se.m_fallDamageModifier = -1f;
-                se.m_maxMaxFallSpeed = 100f;
-            }
-
-            // Troll Pheromones: trolls flee
-            if (cfg.EnableTrollPheromones.Value)
+            // Love Potion (MeadTrollPheromones) — troll pheromones
+            if (MegaFoodConfig.LovePotion.Value)
             {
                 se.m_pheromoneFlee = true;
                 var trollPrefab = ZNetScene.instance?.GetPrefab("Troll");
                 if (trollPrefab != null)
                     se.m_pheromoneTarget = trollPrefab;
             }
+
+            // Berserkir Mead (MeadBzerker) — attack, block, dodge stamina -80%
+            if (MegaFoodConfig.Berserkir.Value)
+            {
+                se.m_attackStaminaUseModifier = -0.8f;
+                se.m_blockStaminaUseModifier = -0.8f;
+                // Dodge stamina handled via Harmony patch (DodgeStaminaPatch)
+            }
+
+            // Anti-Sting Concoction (MeadBugRepellent) — prevent deathsquito attacks
+            if (MegaFoodConfig.AntiSting.Value)
+            {
+                se.m_stealthModifier = 1f;
+                se.m_noiseModifier = -1f;
+            }
+
+            // Draught of Vananidir (MeadSwimmer) — -50% swim stamina
+            if (MegaFoodConfig.DraughtOfVananidir.Value)
+                se.m_swimStaminaUseModifier = -0.5f;
+
+            // Tonic of Ratatosk (MeadHasty) — +15% walk/run, +7.5% swim speed
+            if (MegaFoodConfig.TonicOfRatatosk.Value)
+            {
+                se.m_speedModifier = 0.15f;
+                se.m_swimSpeedModifier = 0.075f;
+            }
+
+            // Mead of Troll Endurance (MeadStrength) — +250 carry weight
+            if (MegaFoodConfig.TrollEndurance.Value)
+                se.m_addMaxCarryWeight = 250f;
+
+            // Lightfoot Mead (MeadLightfoot) — -30% jump stamina
+            // Jump height +20% handled via Harmony patch (JumpHeightPatch)
+            if (MegaFoodConfig.Lightfoot.Value)
+                se.m_jumpStaminaUseModifier = -0.3f;
+
+            // Brew of Animal Whispers (MeadTamer) — x2 taming via Harmony patch
 
             shared.m_consumeStatusEffect = se;
         }
