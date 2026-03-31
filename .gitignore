@@ -14,5 +14,7 @@ Environment.props
 *.pdb
 *.nupkg
 
+*.code-workspace
+
 ## Maintenance reports
 maintenance-report.json
