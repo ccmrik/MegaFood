@@ -262,6 +262,14 @@ namespace MegaFood
 
             var clone = Object.Instantiate(original, _prefabContainer.transform);
             clone.name = newName;
+
+            // Inactive container prevents ItemDrop.Awake from firing, so m_dropPrefab
+            // is never set. Without it, Valheim can't resolve the prefab name during
+            // save/load and silently drops the item.
+            var itemDrop = clone.GetComponent<ItemDrop>();
+            if (itemDrop != null)
+                itemDrop.m_itemData.m_dropPrefab = clone;
+
             return clone;
         }
 
