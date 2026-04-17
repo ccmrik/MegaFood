@@ -1,4 +1,4 @@
-# MegaFood – Valheim Mod
+# MegaFood ï¿½ Valheim Mod
 
 ## Project Overview
 
@@ -8,7 +8,7 @@ This is a **Valheim mod** built with **BepInEx 5.x** and **Harmony**. It adds th
 
 | File | Purpose |
 |---|---|
-| `Plugin.cs` | BepInEx plugin entry point — initialises config and Harmony patches |
+| `Plugin.cs` | BepInEx plugin entry point ï¿½ initialises config and Harmony patches |
 | `MegaFoodConfig.cs` | BepInEx `ConfigEntry` bindings for per-item Health / Stamina / Eitr |
 | `MegaFoodItems.cs` | Clones existing prefabs, applies stats/tint, creates recipes |
 | `GamePatches.cs` | Harmony postfix patches for ObjectDB, ZNetScene, Localization, Fermenter |
@@ -16,12 +16,12 @@ This is a **Valheim mod** built with **BepInEx 5.x** and **Harmony**. It adds th
 ## Coding Conventions
 
 - **Target framework:** `netstandard2.1` (required by the Unity / Mono runtime Valheim uses).
-- **Harmony patches** use `[HarmonyPatch]` attribute style — one class per patch target.
+- **Harmony patches** use `[HarmonyPatch]` attribute style ï¿½ one class per patch target.
 - Localisation keys are prefixed `item_mega` (e.g. `$item_megaygg`).
 - All MegaFood items read Health / Stamina / Eitr from the BepInEx config (`MegaFoodConfig.cs`). Duration and regen are still in `ApplyMegaStats()`.
 - Cloned prefabs are marked `DontDestroyOnLoad` and guarded against double-registration.
 - Game assemblies are referenced from the local Valheim install via `Environment.props` (git-ignored).
-- `Private="false"` on all game/engine references — they must NOT be copied to output.
+- `Private="false"` on all game/engine references ï¿½ they must NOT be copied to output.
 
 ## Internal Prefab Names (Valheim)
 
@@ -45,7 +45,7 @@ This is a **Valheim mod** built with **BepInEx 5.x** and **Harmony**. It adds th
 | Path | Location |
 |---|---|
 | Valheim game files | `C:\Program Files (x86)\Steam\steamapps\common\Valheim` |
-| r2modman plugins folder | `C:\Users\Rik\AppData\Roaming\r2modmanPlus-local\Valheim\profiles\Valheim Min Mods\BepInEx\plugins` |
+| Release-staged DLL | `..\Latest Release\MegaFood\MegaFood.dll` (uploaded to GitHub; MegaLoad's updater handles profile delivery) |
 | Dedicated server | `C:\Program Files (x86)\Steam\steamapps\common\Valheim dedicated server\valheim_server.exe` |
 | Server saves | `C:\Users\Rik\AppData\LocalLow\IronGate\Valheim` |
 | Server logs | `C:\Users\Rik\OneDrive\Valheim\logs` |

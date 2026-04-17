@@ -11,8 +11,8 @@ namespace MegaFood
     public class Plugin : BaseUnityPlugin
     {
         public const string PluginGUID = "com.rikal.megafood";
-        public const string PluginName = "MegaFood";
-        public const string PluginVersion = "1.4.0";
+        public const string PluginName = "Mega Food";
+        public const string PluginVersion = "1.4.1";
 
         private static ManualLogSource _logger;
         private readonly Harmony _harmony = new Harmony(PluginGUID);
