@@ -12,7 +12,7 @@ namespace MegaFood
     {
         public const string PluginGUID = "com.rikal.megafood";
         public const string PluginName = "Mega Food";
-        public const string PluginVersion = "1.4.1";
+        public const string PluginVersion = "1.4.2";
 
         private static ManualLogSource _logger;
         private readonly Harmony _harmony = new Harmony(PluginGUID);
@@ -45,7 +45,7 @@ namespace MegaFood
             _harmony.PatchAll();
 
             _logger.LogInfo($"{PluginName} v{PluginVersion} loaded!");
-            _logger.LogInfo($"Live config reloading enabled - edit {Config.ConfigFilePath} and save to apply changes!");
+            Log($"Live config reloading enabled - edit {Config.ConfigFilePath} and save to apply changes!");
         }
 
         private void SetupConfigWatcher()
@@ -61,7 +61,7 @@ namespace MegaFood
             _configWatcher.SynchronizingObject = null;
             _configWatcher.EnableRaisingEvents = true;
 
-            _logger.LogInfo($"Config watcher started for: {configFile}");
+            Log($"Config watcher started for: {configFile}");
         }
 
         private static void OnConfigChanged(object sender, FileSystemEventArgs e)
@@ -70,7 +70,7 @@ namespace MegaFood
             {
                 System.Threading.Thread.Sleep(100);
                 _config.Reload();
-                _logger.LogInfo("Config reloaded! Changes applied.");
+                Log("Config reloaded! Changes applied.");
 
                 if (Player.m_localPlayer != null)
                 {
