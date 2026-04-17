@@ -1,4 +1,5 @@
 using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using System;
@@ -11,17 +12,31 @@ namespace MegaFood
     {
         public const string PluginGUID = "com.rikal.megafood";
         public const string PluginName = "MegaFood";
-        public const string PluginVersion = "1.3.1";
+        public const string PluginVersion = "1.4.0";
 
         private static ManualLogSource _logger;
         private readonly Harmony _harmony = new Harmony(PluginGUID);
         private static FileSystemWatcher _configWatcher;
         private static BepInEx.Configuration.ConfigFile _config;
 
+        public static ConfigEntry<bool> DebugMode;
+
+        /// <summary>Gated diagnostic log. Silent unless DebugMode = true.</summary>
+        public static void Log(string msg) { if (DebugMode?.Value == true) _logger?.LogInfo(msg); }
+        /// <summary>Unconditional log — reserved for milestones and genuine errors.</summary>
+        public static void LogAlways(string msg) => _logger?.LogInfo(msg);
+
         private void Awake()
         {
             _logger = Logger;
             _config = Config;
+
+            DebugMode = Config.Bind(
+                "99. Debug",
+                "DebugMode",
+                false,
+                "Enable verbose debug logging for MegaFood"
+            );
 
             MigrateConfig(Config.ConfigFilePath);
             Config.Reload();

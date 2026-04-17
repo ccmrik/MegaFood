@@ -6,9 +6,9 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
-    <Version>1.3.1</Version>
-    <AssemblyVersion>1.3.1</AssemblyVersion>
-    <FileVersion>1.3.1</FileVersion>
+    <Version>1.4.0</Version>
+    <AssemblyVersion>1.4.0</AssemblyVersion>
+    <FileVersion>1.4.0</FileVersion>
     <Authors>rikal</Authors>
     <Description>Adds powerful MegaFood items to Valheim - MegaYgg, MegaEgg, and MegaJerk</Description>
   </PropertyGroup>
@@ -16,8 +16,7 @@
   <!-- Default paths - override via Environment.props -->
   <PropertyGroup>
     <ValheimDir Condition="'$(ValheimDir)' == ''">C:\Program Files (x86)\Steam\steamapps\common\Valheim</ValheimDir>
-    <PluginDir Condition="'$(PluginDir)' == ''">C:\Users\rikal\AppData\Roaming\r2modmanPlus-local\Valheim\profiles\Valheim Min Mods\BepInEx\plugins</PluginDir>
-    <BepInExDir Condition="'$(BepInExDir)' == ''">C:\Users\rikal\AppData\Roaming\r2modmanPlus-local\Valheim\profiles\Valheim Min Mods\BepInEx\core</BepInExDir>
+    <BepInExDir Condition="'$(BepInExDir)' == ''">C:\Users\Rik\AppData\Roaming\r2modmanPlus-local\Valheim\profiles\Valheim Min Mods\BepInEx\core</BepInExDir>
     <ValheimManagedDir>$(ValheimDir)\valheim_Data\Managed</ValheimManagedDir>
   </PropertyGroup>
   <ItemGroup>
